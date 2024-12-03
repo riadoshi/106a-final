@@ -1,0 +1,8 @@
+prefix=/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/install
+
+Name: code
+Description: Description of code
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
