@@ -3,8 +3,9 @@ import json_numpy
 from json_numpy import loads
 import urllib
 import numpy as np
-import pickle
+
 json_numpy.patch()
+
 SERVER_URL = "128.32.176.100:8000"
 
 def get_centroid_and_recyclable_label():
