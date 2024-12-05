@@ -6,6 +6,7 @@ import numpy as np
 import cv2
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
+from sensor_msgs.msg import CameraInfo
 
 import time
 import rospy
@@ -24,7 +25,22 @@ class RobotCode:
         self.image_sub = rospy.Subscriber("/io/internal_camera/head_camera/image_raw", Image, self.image_callback)
         self.first_image = None
 
+        self.fx = None
+        self.fy = None
+        self.cx = None
+        self.cy = None
+
+        self.camera_info_sub = rospy.Subscriber("/io/internal_camera/head_camera/camera_info", CameraInfo, self.camera_info_callback)     # gettting camera info for pixel conversion
+
         rospy.spin()
+    
+    def camera_info_callback(self, msg):
+        # Extracting the intrinsic parameters from the CameraInfo message (look this message type up online)
+        K = msg.K
+        self.fx = K[0]
+        self.fy = K[4]
+        self.cx = K[2]
+        self.cy = K[5]
 
     def image_callback(self, img_data):
         """The callback function to show image by using CvBridge and cv
