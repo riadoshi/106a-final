@@ -11,6 +11,7 @@ import time
 import rospy
 import intera_interface
 from PIL import Image as PILImage
+from PIL import ImageDraw
 
 from client import get_centroid_and_recyclable_label
 
@@ -30,22 +31,40 @@ class RobotCode:
         """
         # (edge_detection, window_name) = ignore
 
-        print('here')
         try:
             cv_image = self.bridge.imgmsg_to_cv2(img_data, "bgr8")
             img_rgb = cv2.cvtColor(cv_image, cv2.COLOR_BGR2RGB)
 
-            if not self.first_image:
+            if self.first_image is None:
                 self.first_image = img_rgb
                 print('got image')
                 self.centroid, self.label = get_centroid_and_recyclable_label(self.first_image)
                 print("got centroid, got label!")
 
+                # plot centroid on image and save down
+                if self.centroid and self.label:
+                    pilimg = PILImage.fromarray(self.first_image)
+                    draw = ImageDraw.Draw(pilimg)
+                    point_radius = 5
+                    point_color=(255,0,0)
+                    x,y = self.centroid
+                    draw.ellipse(
+                        [(x-point_radius, y-point_radius), (x+point_radius, y+point_radius)],
+                        fill=point_color,
+                        outline=point_color
+                    )
+                    pilimg.save('plottedcentroid1.png')
+                    print("img saved!")
+
         except CvBridgeError as err:
             rospy.logerr(err)
             return
 
-    # def run():
+
+
+if __name__ == '__main__':
+    RobotCode()
+        # def run():
     #     # rp = intera_interface.RobotParams()
     #     # valid_cameras = rp.get_camera_names()
     #     # if not valid_cameras:
@@ -67,8 +86,3 @@ class RobotCode:
     #         rate.sleep()
 
         # centroid = get_centroid(image)
-
-
-if __name__ == '__main__':
-    RobotCode()
-    

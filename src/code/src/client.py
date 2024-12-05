@@ -14,12 +14,19 @@ def get_centroid_and_recyclable_label(image):
         "image": image.tolist(),
     }
 
+
     print("waiting for server")
     output = loads(requests.post(
         # 'http://128.32.176.100:8000/query',
-        'http://128.32.162.191:8000/query',
+        # 'http://128.32.162.191:8000/query',
+        'https://7b64-128-32-176-100.ngrok-free.app/query',
         json=payload,
     ).json())
 
-    centroid, label = output['centroid'], output['label']
+    print(output)
+    if type(output) == str:
+        print(output)
+        centroid, label = None, None
+    else:
+        centroid, label = output['centroid'], output['label']
     return centroid, label
