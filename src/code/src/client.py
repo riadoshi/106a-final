@@ -6,8 +6,6 @@ import numpy as np
 
 json_numpy.patch()
 
-SERVER_URL = "http://128.32.176.100:8000"
-
 def get_centroid_and_recyclable_label(image):
     
     payload = {
@@ -19,7 +17,7 @@ def get_centroid_and_recyclable_label(image):
     output = loads(requests.post(
         # 'http://128.32.176.100:8000/query',
         # 'http://128.32.162.191:8000/query',
-        'https://3622-128-32-176-100.ngrok-free.app/',
+        'https://3622-128-32-176-100.ngrok-free.app/query',
         json=payload,
     ).json())
 
