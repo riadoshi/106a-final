@@ -4,25 +4,35 @@
 3. use wire to connect usb c of realsense to usb of pc
 
 ## to run the code: 
-`catkin_make`
-`source devel/setup.bash`
+```
+catkin_make
+source devel/setup.bash
+```
 
 ssh into sawyer (alice)
-`cd ~/ros_workspaces/106a-final`
-`catkin_make`
-`source devel/setup.bash`
+```
+cd ~/ros_workspaces/106a-final
+catkin_make
+source devel/setup.bash
+```
 
 start up camera
-`roslaunch realsense2_camera rs_camera.launch mode:=Manual color_width:=424 \
+```
+roslaunch realsense2_camera rs_camera.launch mode:=Manual color_width:=424 \
  color_height:=240 depth_width:=424 depth_height:=240 align_depth:=true \
- depth_fps:=6 color_fps:=6`
+ depth_fps:=6 color_fps:=6
+```
  start up rviz and check that camera is working properly by adding new Image object under `/camera/color/image_raw`
 
  connect world tf frame to camera tf frame
- `rosrun tf static_transform_publisher 0 0 0 0 0 0 base camera_link 100`
+ ```
+ rosrun tf static_transform_publisher 0 0 0 0 0 0 base camera_link 100`
+```
 
  run robot python file
-`rosrun code robot_code.py`
+```
+rosrun code robot_code.py
+```
 
 ## to run the server: (only ria's computer has access rn)
 ```
