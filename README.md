@@ -26,7 +26,7 @@ roslaunch realsense2_camera rs_camera.launch mode:=Manual color_width:=424 \
 
  connect world tf frame to camera tf frame
  ```
- rosrun tf static_transform_publisher 0 0 0 0 0 0 base camera_link 100`
+ rosrun tf static_transform_publisher 0 0 0 0 0 0 base camera_link 100
 ```
 
  run robot python file
