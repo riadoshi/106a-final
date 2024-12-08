@@ -403,6 +403,18 @@ actionlib_DIR:PATH=/opt/ros/noetic/share/actionlib/cmake
 //The directory containing a CMake configuration file for actionlib_msgs.
 actionlib_msgs_DIR:PATH=/opt/ros/noetic/share/actionlib_msgs/cmake
 
+//The directory containing a CMake configuration file for baxter_core_msgs.
+baxter_core_msgs_DIR:PATH=/opt/ros/eecsbot_ws/devel/share/baxter_core_msgs/cmake
+
+//The directory containing a CMake configuration file for baxter_interface.
+baxter_interface_DIR:PATH=/opt/ros/eecsbot_ws/devel/share/baxter_interface/cmake
+
+//The directory containing a CMake configuration file for baxter_maintenance_msgs.
+baxter_maintenance_msgs_DIR:PATH=/opt/ros/eecsbot_ws/devel/share/baxter_maintenance_msgs/cmake
+
+//The directory containing a CMake configuration file for baxter_tools.
+baxter_tools_DIR:PATH=/opt/ros/eecsbot_ws/devel/share/baxter_tools/cmake
+
 //The directory containing a CMake configuration file for catkin.
 catkin_DIR:PATH=/opt/ros/noetic/share/catkin/cmake
 
@@ -504,10 +516,37 @@ intera_interface_DIR:PATH=/opt/ros/eecsbot_ws/devel/share/intera_interface/cmake
 intera_motion_msgs_DIR:PATH=/opt/ros/eecsbot_ws/devel/share/intera_motion_msgs/cmake
 
 //Path to a library.
-lib:FILEPATH=/opt/ros/noetic/lib/libdynamic_reconfigure_config_init_mutex.so
+lib:FILEPATH=/opt/ros/noetic/lib/libtf2.so
+
+//The directory containing a CMake configuration file for message_filters.
+message_filters_DIR:PATH=/opt/ros/noetic/share/message_filters/cmake
+
+//The directory containing a CMake configuration file for message_generation.
+message_generation_DIR:PATH=/opt/ros/noetic/share/message_generation/cmake
 
 //The directory containing a CMake configuration file for message_runtime.
 message_runtime_DIR:PATH=/opt/ros/noetic/share/message_runtime/cmake
+
+//Value Computed by CMake
+move_arm_BINARY_DIR:STATIC=/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/build/move_arm
+
+//Value Computed by CMake
+move_arm_SOURCE_DIR:STATIC=/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/src/move_arm
+
+//The directory containing a CMake configuration file for moveit_msgs.
+moveit_msgs_DIR:PATH=/opt/ros/noetic/share/moveit_msgs/cmake
+
+//The directory containing a CMake configuration file for object_recognition_msgs.
+object_recognition_msgs_DIR:PATH=/opt/ros/noetic/share/object_recognition_msgs/cmake
+
+//The directory containing a CMake configuration file for octomap_msgs.
+octomap_msgs_DIR:PATH=/opt/ros/noetic/share/octomap_msgs/cmake
+
+//Value Computed by CMake
+planning_BINARY_DIR:STATIC=/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/build/planning
+
+//Value Computed by CMake
+planning_SOURCE_DIR:STATIC=/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/src/planning
 
 //The directory containing a CMake configuration file for rosconsole.
 rosconsole_DIR:PATH=/opt/ros/noetic/share/rosconsole/cmake
@@ -521,6 +560,9 @@ roscpp_serialization_DIR:PATH=/opt/ros/noetic/share/roscpp_serialization/cmake
 //The directory containing a CMake configuration file for roscpp_traits.
 roscpp_traits_DIR:PATH=/opt/ros/noetic/share/roscpp_traits/cmake
 
+//The directory containing a CMake configuration file for rosgraph.
+rosgraph_DIR:PATH=/opt/ros/noetic/share/rosgraph/cmake
+
 //The directory containing a CMake configuration file for rosgraph_msgs.
 rosgraph_msgs_DIR:PATH=/opt/ros/noetic/share/rosgraph_msgs/cmake
 
@@ -533,8 +575,23 @@ rostime_DIR:PATH=/opt/ros/noetic/share/rostime/cmake
 //The directory containing a CMake configuration file for sensor_msgs.
 sensor_msgs_DIR:PATH=/opt/ros/noetic/share/sensor_msgs/cmake
 
+//The directory containing a CMake configuration file for shape_msgs.
+shape_msgs_DIR:PATH=/opt/ros/noetic/share/shape_msgs/cmake
+
 //The directory containing a CMake configuration file for std_msgs.
 std_msgs_DIR:PATH=/opt/ros/noetic/share/std_msgs/cmake
+
+//The directory containing a CMake configuration file for tf2.
+tf2_DIR:PATH=/opt/ros/noetic/share/tf2/cmake
+
+//The directory containing a CMake configuration file for tf2_msgs.
+tf2_msgs_DIR:PATH=/opt/ros/noetic/share/tf2_msgs/cmake
+
+//The directory containing a CMake configuration file for tf2_py.
+tf2_py_DIR:PATH=/opt/ros/noetic/share/tf2_py/cmake
+
+//The directory containing a CMake configuration file for tf2_ros.
+tf2_ros_DIR:PATH=/opt/ros/noetic/share/tf2_ros/cmake
 
 //The directory containing a CMake configuration file for trajectory_msgs.
 trajectory_msgs_DIR:PATH=/opt/ros/noetic/share/trajectory_msgs/cmake
@@ -692,7 +749,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=5
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=7
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

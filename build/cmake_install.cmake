@@ -132,6 +132,8 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/build/gtest/cmake_install.cmake")
   include("/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/build/code/cmake_install.cmake")
+  include("/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/build/move_arm/cmake_install.cmake")
+  include("/home/cc/ee106a/fa24/class/ee106a-acw/ros_workspaces/106a-final/build/planning/cmake_install.cmake")
 
 endif()
 

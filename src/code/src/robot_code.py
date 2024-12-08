@@ -7,14 +7,20 @@ import cv2
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image
 from sensor_msgs.msg import CameraInfo
+import matplotlib.pyplot as plt
 
 import time
+import os
+import tf
+from geometry_msgs.msg import Point, PointStamped
+from std_msgs.msg import Header
 import rospy
 import intera_interface
 from PIL import Image as PILImage
 from PIL import ImageDraw
 
 from client import get_centroid_and_recyclable_label
+
 
 FIRST_IMG = None
 
@@ -23,7 +29,7 @@ class RobotCode:
         rospy.init_node('robot_code', anonymous=True)
         self.bridge = CvBridge()
 
-        self.cv_color_image = None
+        #self.cv_color_image = None
         self.cv_depth_image = None
 
         self.image_sub = rospy.Subscriber("/camera/color/image_raw", Image, self.image_callback)
@@ -36,8 +42,15 @@ class RobotCode:
         self.cx = None
         self.cy = None
 
+        self.tf_listener = tf.TransformListener()  # Create a TransformListener object
+
         self.camera_info_sub = rospy.Subscriber("/camera/color/camera_info", CameraInfo, self.camera_info_callback)     # gettting camera info for pixel conversion
 
+        self.point_pub = rospy.Publisher("goal_point", Point, queue_size=10)
+        self.image_pub = rospy.Publisher('detected_cup', Image, queue_size=10)
+
+        
+        
         rospy.spin()
     
     def camera_info_callback(self, msg):
@@ -68,6 +81,7 @@ class RobotCode:
                 self.first_image = img_rgb
                 print('got image')
                 self.centroid, self.label = get_centroid_and_recyclable_label(self.first_image)
+                print(type(self.centroid[0]))
                 print("got centroid, got label!")
 
                 # plot centroid on image and save down
@@ -84,6 +98,10 @@ class RobotCode:
                     )
                     pilimg.save('plottedcentroid1.png')
                     print("img saved!")
+            # If we have both color and depth images, process them
+            if self.cv_depth_image is not None:
+                self.process_images()
+            
 
         except CvBridgeError as err:
             rospy.logerr(err)
@@ -101,7 +119,7 @@ class RobotCode:
 
         # Fetch the depth value at the center
         center_x, center_y = self.centroid
-        depth = self.cv_depth_image[center_y, center_x]
+        depth = self.cv_depth_image[ int(center_y), int(center_x)]
         print(self.fx)
         print(self.fy)
         print(self.cx)
@@ -130,7 +148,7 @@ class RobotCode:
                     # Publish the transformed point
                     self.point_pub.publish(Point(X_base, Y_base, Z_base))
 
-                    cup_img = self.cv_color_image.copy()
+                    cup_img = self.first_image.copy()
                     
                     # Convert to ROS Image message and publish
                     ros_image = self.bridge.cv2_to_imgmsg(cup_img, "bgr8")
