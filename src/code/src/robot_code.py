@@ -66,6 +66,8 @@ class RobotCode:
         X = ((u-self.cx)*depth)/self.fx
         Y = ((v-self.cy)*depth)/self.fy
         Z = depth
+        print("p2p")
+        print((X, Y, Z))
         return X, Y, Z
 
     def image_callback(self, img_data):
@@ -81,6 +83,7 @@ class RobotCode:
                 self.first_image = img_rgb
                 print('got image')
                 self.centroid, self.label = get_centroid_and_recyclable_label(self.first_image)
+                # self.centroid[1] = abs(self.centroid[1])
                 print(type(self.centroid[0]))
                 print("got centroid, got label!")
 
