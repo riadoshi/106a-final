@@ -14,6 +14,7 @@ import os
 import tf
 from geometry_msgs.msg import Point, PointStamped
 from std_msgs.msg import Header
+from std_msgs.msg import String
 import rospy
 import intera_interface
 from PIL import Image as PILImage
@@ -23,6 +24,15 @@ from client import get_centroid_and_recyclable_label
 
 
 FIRST_IMG = None
+
+DISH_DCT = {
+    'banana': 'food',
+    'apple': 'food', 
+    'orange': 'food',
+    'spoon': 'utensil',
+    'fork': 'utensil',
+    'cup': 'utensil'
+}
 
 class RobotCode:
     def __init__(self):
@@ -34,7 +44,7 @@ class RobotCode:
 
         self.image_sub = rospy.Subscriber("/camera/color/image_raw", Image, self.image_callback)
         self.depth_image_sub = rospy.Subscriber("/camera/aligned_depth_to_color/image_raw", Image, self.depth_image_callback)
-
+        
         self.first_image = None
 
         self.fx = None
@@ -48,6 +58,7 @@ class RobotCode:
 
         self.point_pub = rospy.Publisher("goal_point", Point, queue_size=10)
         self.image_pub = rospy.Publisher('detected_cup', Image, queue_size=10)
+        self.obj_pub = rospy.Publisher('obj_type', String, queue_size=10)
 
         
         
@@ -82,23 +93,35 @@ class RobotCode:
             if self.first_image is None:
                 self.first_image = img_rgb
                 print('got image')
-                self.centroid, self.label = get_centroid_and_recyclable_label(self.first_image)
-                # self.centroid[1] = abs(self.centroid[1])
-                print(type(self.centroid[0]))
-                print("got centroid, got label!")
+                bowl_centroid_dct, obj_centroid_dict = get_centroid_and_recyclable_label(self.first_image)
+
+                self.bowl_centroid = bowl_centroid_dct['centroid']
+                self.obj_name, self.obj_centroid = obj_centroid_dict['label'], obj_centroid_dict['centroid']
+
+                print("got centroids, got label!")
 
                 # plot centroid on image and save down
-                if self.centroid and self.label:
+                if self.bowl_centroid and self.obj_centroid:
                     pilimg = PILImage.fromarray(self.first_image)
                     draw = ImageDraw.Draw(pilimg)
                     point_radius = 5
                     point_color=(255,0,0)
-                    x,y = self.centroid
+                    x,y = self.bowl_centroid
                     draw.ellipse(
                         [(x-point_radius, y-point_radius), (x+point_radius, y+point_radius)],
                         fill=point_color,
                         outline=point_color
                     )
+
+                    point_radius = 5
+                    point_color=(0,255,0)
+                    x,y = self.obj_centroid
+                    draw.ellipse(
+                        [(x-point_radius, y-point_radius), (x+point_radius, y+point_radius)],
+                        fill=point_color,
+                        outline=point_color
+                    )
+
                     pilimg.save('plottedcentroid1.png')
                     print("img saved!")
             # If we have both color and depth images, process them
@@ -121,7 +144,7 @@ class RobotCode:
     def process_images(self):
 
         # Fetch the depth value at the center
-        center_x, center_y = self.centroid
+        center_x, center_y = self.bowl_centroid
         depth = self.cv_depth_image[ int(center_y), int(center_x)]
         print(self.fx)
         print(self.fy)
@@ -142,7 +165,7 @@ class RobotCode:
                 self.tf_listener.waitForTransform("/base", "/camera_link", rospy.Time(), rospy.Duration(10.0))
                 point_base = self.tf_listener.transformPoint("/base", PointStamped(header=Header(stamp=rospy.Time(), frame_id="/camera_link"), point=Point(camera_link_x, camera_link_y, camera_link_z)))
                 # 0.1 x 0 y 0.03 z
-                X_base, Y_base, Z_base = point_base.point.x, point_base.point.y, point_base.point.z+0.06
+                X_base, Y_base, Z_base = point_base.point.x, point_base.point.y, point_base.point.z-0.05
                 print("Real-world coordinates in base frame: (X, Y, Z) = ({:.2f}m, {:.2f}m, {:.2f}m)".format(X_base, Y_base, Z_base))
 
                 if X_base < 0.001 and X_base > -0.001:
@@ -151,6 +174,7 @@ class RobotCode:
                     print("Publishing goal point: ", X_base, Y_base, Z_base)
                     # Publish the transformed point
                     self.point_pub.publish(Point(X_base, Y_base, Z_base))
+                    self.obj_pub.publish(DISH_DCT[self.obj_name])
 
                     cup_img = self.first_image.copy()
                     
