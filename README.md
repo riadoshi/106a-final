@@ -35,6 +35,13 @@ rosrun code robot_code.py
 rosrun tf static_transform_publisher 0.3556 0.3429 -0.1143 0 0 0 base camera_link 100
 ```
 
+run motion planning
+```
+rosrun intera_interface joint_trajectory_action_server.py
+roslaunch sawyer_moveit_config sawyer_moveit.launch electric_gripper:=true
+rosrun move_arm ik_example.py
+```
+
 ## to run the server: (only ria's computer has access rn)
 ```
 ssh honeydew
