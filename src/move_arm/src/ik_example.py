@@ -8,7 +8,10 @@ from numpy import linalg
 from geometry_msgs.msg import Point, PointStamped
 from std_msgs.msg import String
 from intera_interface import gripper as robot_gripper
+from intera_interface import Limb
 import sys
+import tf.transformations as tf
+
 
 FOOD_LOC = (0.747, -0.264, 0.074)
 UTENSIL_LOC = (0.747, -0.464, 0.074)
@@ -39,6 +42,7 @@ def main():
     # self.goal_point_sub = rospy.Subscriber("/goal_point", Point, None)
     # Set up the right gripper
     right_gripper = robot_gripper.Gripper('right_gripper')
+    limb = Limb("right")
 
     ik_class = IKExample()
 
@@ -49,6 +53,58 @@ def main():
         right_gripper.open()
         rospy.sleep(1.0)
         print('Done!')
+
+                        # Python's syntax for a main() method# Construct the request
+        request = GetPositionIKRequest()
+        request.ik_request.group_name = "right_arm"
+
+        input('Press [ Enter ] for fourth movement: ')
+
+        # If a Sawyer does not have a gripper, replace '_gripper_tip' with '_wrist' instead
+        # link = "stp_022312TP99620_tip_1"
+        link = "right_gripper_tip"
+
+        request.ik_request.ik_link_name = link
+        # request.ik_request.attempts = 20
+        request.ik_request.pose_stamped.header.frame_id = "base"
+        
+        # Set the desired orientation for the end effector HERE
+        # request.ik_request.pose_stamped.pose.position.x = type_loc[0]
+        # request.ik_request.pose_stamped.pose.position.y = type_loc[1] 
+        # request.ik_request.pose_stamped.pose.position.z = type_loc[2] 
+        request.ik_request.pose_stamped.pose.position.x = 0.687 
+        request.ik_request.pose_stamped.pose.position.y = 0.159
+        request.ik_request.pose_stamped.pose.position.z = 0.383    
+        request.ik_request.pose_stamped.pose.orientation.x = 0.0
+        request.ik_request.pose_stamped.pose.orientation.y = 1.0
+        request.ik_request.pose_stamped.pose.orientation.z = 0.0
+        request.ik_request.pose_stamped.pose.orientation.w = 0
+        
+        try:
+            # Send the request to the service
+            response = compute_ik(request)
+            
+            # Print the response HERE
+            print(response)
+            group = MoveGroupCommander("right_arm")
+
+            # Setting position and orientation target
+            group.set_pose_target(request.ik_request.pose_stamped)
+
+            # TRY THIS
+            # Setting just the position without specifying the orientation
+            # group.set_position_target([ik_class.goal_x, ik_class.goal_y, ik_class.goal_z])
+
+            # Plan IK
+            plan = group.plan()
+            user_input = input("Enter 'y' if the trajectory looks safe on RVIZ")
+            
+            # Execute IK if safe
+            if user_input == 'y':
+                group.execute(plan[1])
+            
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
         
         
         
@@ -181,7 +237,7 @@ def main():
         request = GetPositionIKRequest()
         request.ik_request.group_name = "right_arm"
 
-        input('Press [ Enter ] for fourth movement: ')
+        input('Press [ Enter ] for third movement: ')
 
         # If a Sawyer does not have a gripper, replace '_gripper_tip' with '_wrist' instead
         # link = "stp_022312TP99620_tip_1"
@@ -228,17 +284,103 @@ def main():
             
         except rospy.ServiceException as e:
             print("Service call failed: %s"%e)
+        
+
+        current_angles = limb.joint_angles()
+        print("Current joint angles: ", current_angles)
+
+        desired_joint_pos = {
+            "right_j0": current_angles["right_j0"],
+            "right_j1": current_angles["right_j1"],
+            "right_j2": current_angles["right_j2"],
+            "right_j3": current_angles["right_j3"],
+            "right_j4": current_angles["right_j4"] - 1.57,
+            "right_j5": current_angles["right_j5"],
+            "right_j6": current_angles["right_j6"],
+        }
+
+        print(desired_joint_pos)
+
+        input('Press [ Enter ] for tipping: ')
+
+        limb.move_to_joint_positions(desired_joint_pos)
 
         
-        # Open the right gripper
-        print('Opening...')
-        right_gripper.open()
-        rospy.sleep(1.0)
-        print('Done!')
+        # # Open the right gripper
+        # print('Opening...')
+        # right_gripper.open()
+        # rospy.sleep(1.0)
+        # print('Done!')
+
+                #         # Python's syntax for a main() method# Construct the request
+        # request = GetPositionIKRequest()
+        # request.ik_request.group_name = "right_arm"
+
+        # input('Press [ Enter ] for fourth movement: ')
+
+        # # If a Sawyer does not have a gripper, replace '_gripper_tip' with '_wrist' instead
+        # # link = "stp_022312TP99620_tip_1"
+        # link = "right_gripper_tip"
+
+        # request.ik_request.ik_link_name = link
+        # # request.ik_request.attempts = 20
+        # request.ik_request.pose_stamped.header.frame_id = "base"
+        
+        # Set the desired orientation for the end effector HERE
+        # request.ik_request.pose_stamped.pose.position.x = type_loc[0]
+        # request.ik_request.pose_stamped.pose.position.y = type_loc[1] 
+        # request.ik_request.pose_stamped.pose.position.z = type_loc[2] 
+
+        # q_initial = [0, 1, 0 ,0]
+        # theta = -90 * (3.141592653/180.0)
+        # q_rot = [np.cos(theta/2), np.sin(theta/2),0,0]
+        # q_new = tf.quaternion_multiply(q_rot, q_initial)
+
+
+        # request.ik_request.pose_stamped.pose.position.x = 0.687 
+        # request.ik_request.pose_stamped.pose.position.y = 0.159 - 0.47
+        # request.ik_request.pose_stamped.pose.position.z = 0.383 + 0.47   
+        # request.ik_request.pose_stamped.pose.orientation.x = 0
+        # request.ik_request.pose_stamped.pose.orientation.y = 1
+        # request.ik_request.pose_stamped.pose.orientation.z = 0
+        # request.ik_request.pose_stamped.pose.orientation.w = 0
+
+
+        # request.ik_request.pose_stamped.pose.position.x = 1.0126691798806136
+        # request.ik_request.pose_stamped.pose.position.y = 0.1599
+        # request.ik_request.pose_stamped.pose.position.z = 0.287   
+        # request.ik_request.pose_stamped.pose.orientation.x = 0.597
+        # request.ik_request.pose_stamped.pose.orientation.y = -0.497
+        # request.ik_request.pose_stamped.pose.orientation.z = 0.483
+        # request.ik_request.pose_stamped.pose.orientation.w = -0.4033
+            
+        # try:
+        #     # Send the request to the service
+        #     response = compute_ik(request)
+            
+        #     # Print the response HERE
+        #     print(response)
+        #     group = MoveGroupCommander("right_arm")
+
+        #     # Setting position and orientation target
+        #     group.set_pose_target(request.ik_request.pose_stamped)
+
+        #     # TRY THIS
+        #     # Setting just the position without specifying the orientation
+        #     # group.set_position_target([ik_class.goal_x, ik_class.goal_y, ik_class.goal_z])
+
+        #     # Plan IK
+        #     plan = group.plan()
+        #     user_input = input("Enter 'y' if the trajectory looks safe on RVIZ")
+            
+        #     # Execute IK if safe
+        #     if user_input == 'y':
+        #         group.execute(plan[1])
+            
+        # except rospy.ServiceException as e:
+        #     print("Service call failed: %s"%e)
 
 # Python's syntax for a main() method
 if __name__ == '__main__':
     main()
 
-if __name__ == '__main__':
-    main()
