@@ -32,7 +32,6 @@ roslaunch realsense2_camera rs_camera.launch mode:=Manual color_width:=424 \
  run robot python file
 ```
 rosrun code robot_code.py
-rosrun tf static_transform_publisher 0.3556 0.3429 -0.1143 0 0 0 base camera_link 100
 ```
 
 run motion planning
