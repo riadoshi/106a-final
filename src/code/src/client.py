@@ -10,9 +10,7 @@ def get_centroid_and_recyclable_label(image):
     
     # remove the first half of the image
 
-    image = np.array(image)
 
-    image = image[:, int(0.5*image.shape[1]), :]
     payload = {
         "image": image.tolist(),
     }
