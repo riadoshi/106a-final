@@ -141,7 +141,8 @@ class RobotCode:
             try:
                 self.tf_listener.waitForTransform("/base", "/camera_link", rospy.Time(), rospy.Duration(10.0))
                 point_base = self.tf_listener.transformPoint("/base", PointStamped(header=Header(stamp=rospy.Time(), frame_id="/camera_link"), point=Point(camera_link_x, camera_link_y, camera_link_z)))
-                X_base, Y_base, Z_base = point_base.point.x + 0.1, point_base.point.y, point_base.point.z + 0.03
+                # 0.1 x 0 y 0.03 z
+                X_base, Y_base, Z_base = point_base.point.x, point_base.point.y, point_base.point.z+0.06
                 print("Real-world coordinates in base frame: (X, Y, Z) = ({:.2f}m, {:.2f}m, {:.2f}m)".format(X_base, Y_base, Z_base))
 
                 if X_base < 0.001 and X_base > -0.001:

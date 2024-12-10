@@ -6,6 +6,7 @@ from moveit_commander import MoveGroupCommander
 import numpy as np
 from numpy import linalg
 from geometry_msgs.msg import Point, PointStamped
+from intera_interface import gripper as robot_gripper
 import sys
 
 class IKExample():
@@ -29,10 +30,18 @@ def main():
     # Create the function used to call the service
     compute_ik = rospy.ServiceProxy('compute_ik', GetPositionIK)
     # self.goal_point_sub = rospy.Subscriber("/goal_point", Point, None)
+    # Set up the right gripper
+    right_gripper = robot_gripper.Gripper('stp_022312TP99620')
 
     ik_class = IKExample()
 
     while not rospy.is_shutdown():
+
+        # Open the right gripper
+        # print('Opening...')
+        # right_gripper.open()
+        # rospy.sleep(1.0)
+        # print('Done!')
         
         
         # Construct the request
@@ -45,6 +54,12 @@ def main():
         # y = 0
         # z=-3
         #9 deg
+
+
+        # new calibration 
+        # 17.5 x
+        # 0 y
+        # 11.75 z
 
         # If a Sawyer does not have a gripper, replace '_gripper_tip' with '_wrist' instead
         link = "stp_022312TP99620_tip_1"
