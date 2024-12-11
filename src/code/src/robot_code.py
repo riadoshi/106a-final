@@ -123,6 +123,7 @@ class RobotCode:
                     )
 
                     pilimg.save('plottedcentroid1.png')
+                    
                     print("img saved!")
             # If we have both color and depth images, process them
             if self.cv_depth_image is not None:
@@ -172,6 +173,7 @@ class RobotCode:
                     print("Erroneous goal point, not publishing - Is the cup too close to the camera?")
                 else:
                     print("Publishing goal point: ", X_base, Y_base, Z_base)
+                    print('detected object ', self.obj_name)
                     # Publish the transformed point
                     self.point_pub.publish(Point(X_base, Y_base, Z_base))
                     self.obj_pub.publish(DISH_DCT[self.obj_name])

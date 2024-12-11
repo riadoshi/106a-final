@@ -13,8 +13,8 @@ import sys
 import tf.transformations as tf
 
 
-FOOD_LOC = (0.705, -0.264, 0.383)
-UTENSIL_LOC = (0.705, -0.464, 0.383)
+FOOD_LOC = (0.691, -0.1, 0.383)
+UTENSIL_LOC = (0.691, -0.324, 0.383)
 class IKExample():
 
     def __init__(self):
@@ -207,7 +207,7 @@ def main():
         # request.ik_request.pose_stamped.pose.position.x = 0.671
         # request.ik_request.pose_stamped.pose.position.y = 0.214
         # request.ik_request.pose_stamped.pose.position.z = -0.118   
-        request.ik_request.pose_stamped.pose.position.x = 0.705 
+        request.ik_request.pose_stamped.pose.position.x = 0.691 
         request.ik_request.pose_stamped.pose.position.y = 0.159
         request.ik_request.pose_stamped.pose.position.z = 0.383    
         request.ik_request.pose_stamped.pose.orientation.x = 0.0
@@ -364,7 +364,7 @@ def main():
             "right_j1": current_angles["right_j1"],
             "right_j2": current_angles["right_j2"],
             "right_j3": current_angles["right_j3"],
-            "right_j4": current_angles["right_j4"] - 1,
+            "right_j4": current_angles["right_j4"] - 1.2,
             "right_j5": current_angles["right_j5"],
             "right_j6": current_angles["right_j6"],
         }
